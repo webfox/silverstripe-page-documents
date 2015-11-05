@@ -3,7 +3,7 @@
 class PageDocumentsExtension extends SiteTreeExtension {
 
 	private static $has_many = [
-		'DocumentCategories' => 'DocumentCategory'
+		'DocumentCategories' => 'PageDocumentCategory'
 	];
 
 	public function updateCMSFields(FieldList $fields) {
