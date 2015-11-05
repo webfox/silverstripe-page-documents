@@ -5,7 +5,7 @@ A Documents module for silverstripe that implements the backend on any pagetype 
 
 ### Install through composer
 ```bash
-composer require webfox/silverstripe-page-documents
+composer require webfox/silverstripe-page-document
 ```
 
 ### Apply to any pagetype you want the "Document Categories" tab to appear on
