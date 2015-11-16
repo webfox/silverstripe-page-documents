@@ -1,95 +1,35 @@
 <?php
 
-class PageDocumentCategory extends DataObject {
+class PageDocumentsExtension extends SiteTreeExtension {
 
-    protected static $db = [
-        'Title'     => 'Varchar(255)',
-        'SortOrder' => 'Int'
-    ];
+	private static $has_many = [
+		'DocumentCategories' => 'PageDocumentCategory'
+	];
 
-    protected static $has_one = [
-        'Page' => 'Page'
-    ];
+	public function updateCMSFields(FieldList $fields) {
 
-    private static $summary_fields = [
-        'Title'           => 'Category Title',
-        'Documents.Count' => 'Documents'
-    ];
+		/** @var TabSet $rootTab */
+		//We need to repush Metadata to ensure it is the last tab
+		$rootTab = $fields->fieldByName('Root');
+		$rootTab->push($documentsTab = Tab::create('DocumentCategories'));
+		if ($rootTab->fieldByName('Metadata')) {
+			$metaChildren = $rootTab->fieldByName('Metadata')->getChildren();
+			$rootTab->removeByName('Metadata');
+			$rootTab->push(Tab::create('Metadata')->setChildren($metaChildren));
+		}
 
-    private static $many_many = [
-        'Documents' => 'File'
-    ];
+		$DocumentCategoriesConfig = new GridFieldConfig_RecordEditor();
+		$DocumentCategoriesConfig->addComponent(new GridFieldSortableRows('SortOrder'));
+		$DocumentCategories = new GridField("DocumentCategoriesGridField", "Document Categories", $this->owner->DocumentCategories(), $DocumentCategoriesConfig);
+		$fields->addFieldToTab('Root.DocumentCategories', $DocumentCategories);
 
-    private static $many_many_extraFields = [
-        'Images' => ['SortOrder' => 'Int']
-    ];
+        $config = $this->owner->config()->get('page_documents');
 
-    protected static $default_sort = 'SortOrder';
+		if(is_array($config) && isset($config['title'])) {
+			$documentsTab->setTitle($config['title']);
+		}
 
-    public function getCMSFields() {
-
-        $fields = new FieldList([
-            TextField::create('Title'),
-        ]);
-
-        if ($this->exists()) {
-            $folderName = 'Documents';
-
-            $config = $this->Page()->exists() ? $this->Page()->config()->get('page_documents') : null;
-
-            if (is_array($config)) {
-                if (isset($config['folder'])) {
-                    $folderName = $config['folder'];
-                }
-
-                if (isset($config['section']) && $config['section']) {
-                    $filter  = new URLSegmentFilter();
-                    $section = implode('-',
-                        array_map(
-                            function ($string) { return ucfirst($string); },
-                            explode('-', $filter->filter($this->Title))
-                        )
-                    );
-                    $folderName .= '/' . $section;
-                }
-            }
-
-            $fields->push(SortableUploadField::create('Documents', 'Documents')->setDescription('Drag documents by thumbnail to sort')->setFolderName($folderName));
-        } else {
-            $fields->push(LiteralField::create('DocumentsNotSaved', '<p>Save category to add documents</p>'));
-
-        }
-
-        $folderName = 'Documents';
-
-
-        return $fields;
-
-    }
-
-    public
-    function SortedDocuments() {
-        return $this->Documents()->Sort('SortOrder');
-    }
-
-    public
-    function canView($member = null) {
-        return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
-    }
-
-    public
-    function canEdit($member = null) {
-        return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
-    }
-
-    public
-    function canDelete($member = null) {
-        return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
-    }
-
-    public
-    function canCreate($member = null) {
-        return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
-    }
+		return $fields;
+	}
 
 }
