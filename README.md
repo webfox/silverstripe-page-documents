@@ -14,7 +14,11 @@ composer require webfox/silverstripe-page-documents
 Page:
   extensions:
     - PageDocumentsExtension
-  document_category_title: 'Document Categories'
+  page_documents:
+    title: 'Page Documents'  #Tab Title: defaults to 'Document Categories'
+    folder: 'Docs'           #Where to store docs: defaults to  'Documents'
+    section: true            #If true the documents are stored in a child folder named after the 
+                             #category e.g. Docs/Category-Title/myfile.pdf: defaults to false
 ```
 
 ### Use on the frontend
