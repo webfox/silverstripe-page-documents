@@ -21,7 +21,7 @@ class PageDocumentCategory extends DataObject {
     ];
 
     private static $many_many_extraFields = [
-        'Images' => ['SortOrder' => 'Int']
+        'Documents' => ['SortOrder' => 'Int']
     ];
 
     protected static $default_sort = 'SortOrder';
