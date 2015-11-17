@@ -59,6 +59,8 @@ class PageDocumentCategory extends DataObject {
             $fields->push(LiteralField::create('DocumentsNotSaved', '<p>Save category to add documents</p>'));
 
         }
+        
+        $this->extend('updateCMSFields', $fields);
 
         return $fields;
 
