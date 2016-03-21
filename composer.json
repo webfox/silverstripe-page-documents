@@ -3,7 +3,7 @@
   "type"       : "silverstripe-module",
   "description": "A silverstripe documents module",
   "require"    : {
-    "undefinedoffset/sortablegridfield": "0.4.*",
+    "undefinedoffset/sortablegridfield": "~0.4",
     "bummzack/sortablefile": "^1.2"
   },
   "license"    : "MIT",
